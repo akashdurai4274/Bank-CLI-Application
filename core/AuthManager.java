@@ -5,7 +5,6 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-
 import models.User;
 import utils.FileUtils;
 
@@ -22,7 +21,7 @@ public class AuthManager {
                     return user;
                 }
             }
-        }catch(IOException e){
+        } catch (IOException e) {
             System.out.println("Error reading users file...");
         }
         return null;
