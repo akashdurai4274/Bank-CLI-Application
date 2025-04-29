@@ -1,6 +1,7 @@
 
 import core.AccountManager;
 import core.AuthManager;
+import core.TransactionManager;
 import java.util.Scanner;
 import models.User;
 
@@ -80,10 +81,15 @@ public class Main {
 
     public static void showUserMenu() {
         System.out.println("\n LoggedIn as " + LoggedInUser.getUsername() + "[" + LoggedInUser.getRole() + "]");
+        System.out.println("-------------------------------------------");
         if ("CUSTOMER".equalsIgnoreCase(LoggedInUser.getRole())) {
             System.out.println("1. View balance");
             System.out.println("2. Create Account(For any user)");
-            System.out.println("3. Logout");
+            System.out.println("3. Deposit");
+            System.out.println("4. Withdraw");
+            System.out.println("5. Transfer");
+            System.out.println("6. View Transaction");
+            System.out.println("7. Logout");
             System.out.println("> ");
             String input = scanner.nextLine();
             switch (input) {
@@ -94,6 +100,39 @@ public class Main {
                     AccountManager.createAccount(LoggedInUser.getUsername());
                     break;
                 case "3":
+                    System.out.println("Amount to Deposit: ");
+                    double dAmt = Double.parseDouble(scanner.nextLine());
+                    System.out.println(dAmt);
+                    if (AccountManager.deposit(LoggedInUser.getUsername(), dAmt)) {
+                        System.out.println("Deposit Successfull");
+                        System.out.println("Balance: ");
+                        AccountManager.showBalance(LoggedInUser.getUsername());
+                    }
+                    break;
+                case "4":
+                    System.out.println("Amount to withdraw: ");
+                    double wAmt = Double.parseDouble(scanner.nextLine());
+                    if (AccountManager.withdraw(LoggedInUser.getUsername(), wAmt)) {
+                        System.out.println("Withdraw Sucessfull");
+                    } else {
+                        System.out.println("Insufficient balance or error");
+                    }
+                    break;
+                case "5":
+                    System.out.println("Reciptant User Name: ");
+                    String reciever = scanner.nextLine();
+                    System.out.println("Amount to Transfer: ");
+                    double Amt = Double.parseDouble(scanner.nextLine());
+                    if (AccountManager.transfer(LoggedInUser.getUsername(), reciever, Amt)) {
+                        System.out.println("Transfer Successful");
+                    } else {
+                        System.out.println("Transfer Fails");
+                    }
+                    break;
+                case "6":
+                    TransactionManager.ViewTransactionDetails(LoggedInUser.getUsername());
+                    break;
+                case "7":
                     LoggedInUser = null;
                     break;
                 default:

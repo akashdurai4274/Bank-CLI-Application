@@ -58,7 +58,7 @@ public class AccountManager {
         Account acc = getAccountByUserName(username);
         if (acc != null) {
             System.out.println("Account " + acc.getAccountNumber());
-            System.out.println("balance: \u20B9" + acc.getBalance());
+            System.out.println("balance: Rupees " + acc.getBalance());
         } else {
             System.out.println("******************************");
             System.out.println("No Account Found");
@@ -72,6 +72,8 @@ public class AccountManager {
             List<String> lines = Files.readAllLines(Paths.get(ACCOUNTS_FILE));
             for (String line : lines) {
                 Account acc = Account.fromFileString(line);
+                if (acc == null)
+                    continue;
                 if (acc.getUsername().equals(updatedAccount.getUsername())) {
                     accounts.add(updatedAccount);
                 } else {
@@ -82,6 +84,7 @@ public class AccountManager {
             System.out.println("Error When Reading Accounts File");
             return false;
         }
+        System.out.println(accounts);
 
         try {
             List<String> updatedLines = new ArrayList<>();
@@ -108,5 +111,32 @@ public class AccountManager {
         return updated;
     }
 
-    
+    public static boolean withdraw(String username, double amount) {
+        Account acc = getAccountByUserName(username);
+        if (acc == null || acc.getBalance() < amount)
+            return false;
+
+        acc.withdraw(amount);
+        boolean updated = updateAccount(acc);
+        if (updated)
+            TransactionManager.log(username, "WITHDRAW", amount);
+        return updated;
+    }
+
+    public static boolean transfer(String fromUser, String toUser, double amount) {
+        Account senderAccount = getAccountByUserName(fromUser);
+        Account recieverAccount = getAccountByUserName(toUser);
+        if (senderAccount == null || recieverAccount == null || senderAccount.getBalance() < amount)
+            return false;
+        senderAccount.withdraw(amount);
+        recieverAccount.deposit(amount);
+        boolean updatedSender = updateAccount(senderAccount);
+        boolean updatedReciever = updateAccount(recieverAccount);
+        if (updatedSender && updatedReciever) {
+            TransactionManager.log(fromUser, "Transfered_To, " + toUser, amount);
+            TransactionManager.log(toUser, "Recieved_From, " + fromUser, amount);
+            return true;
+        }
+        return false;
+    }
 }

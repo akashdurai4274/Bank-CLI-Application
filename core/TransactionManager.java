@@ -29,10 +29,15 @@ public class TransactionManager {
     public static void ViewTransactionDetails(String username) {
         try {
             List<String> lines = Files.readAllLines(Paths.get(TRANSACTION_FILE));
+            boolean found = false;
             for (String line : lines) {
                 if (line.contains("," + username + ",")) {
                     System.out.println(line);
+                    found = true;
                 }
+            }
+            if (!found) {
+                System.out.println("No Transaction happened For this Account!");
             }
         } catch (IOException e) {
             System.out.println("Unable to Read Transactions");

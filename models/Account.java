@@ -1,9 +1,9 @@
 package models;
 
 public class Account {
-    private static String accountNumber;
-    private static String username;
-    private static double balance;
+    private String accountNumber;
+    private String username;
+    private double balance;
 
     public Account(String accountNumber, String username, double balance) {
         this.accountNumber = accountNumber;
@@ -50,7 +50,7 @@ public class Account {
         return new Account(parts[0], parts[1], Double.parseDouble(parts[2]));
     }
 
-    public static String toFileString() {
+    public String toFileString() {
         return accountNumber + "," + username + "," + balance;
     }
 }
